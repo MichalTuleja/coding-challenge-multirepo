@@ -2,7 +2,10 @@ const { Profile, Contract, Job, sequelize } = require('../src/model');
 
 /* WARNING THIS WILL DROP THE CURRENT DATABASE */
 if (require.main === module) {
-    seed();
+    (async () => {
+        await seed();
+        sequelize.close();
+    })();
 }
 
 async function seed() {
@@ -227,9 +230,7 @@ async function seed() {
             paymentDate: '2020-08-14T23:11:26.737Z',
             ContractId: 3,
         }),
-    ]).then(() => {
-        sequelize.close();
-    });
+    ]);
 }
 
 module.exports = seed;
