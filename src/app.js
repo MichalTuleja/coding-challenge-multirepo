@@ -26,9 +26,6 @@ const getContractById = async (req, res) => {
 
     let contract;
 
-    console.log(profile_id);
-    console.log(type);
-
     switch (type) {
         case 'client':
             contract = await Contract.findOne({ where: { id, 'ClientId': profile_id } });
@@ -44,6 +41,38 @@ const getContractById = async (req, res) => {
     res.json(contract);
 };
 
+const getContracts = async (req, res) => {
+    const PAGINATION_LIMIT = 2;
+
+    const page = req.params.page || 0;
+
+    const { Contract } = req.app.get('models');
+    const { id: profile_id, type } = req.profile.dataValues;
+
+    let contract;
+
+    const dbRequest = {
+        limit: PAGINATION_LIMIT,
+        offset: PAGINATION_LIMIT * page,
+    };
+
+    switch (type) {
+        case 'client':
+            dbRequest['where'] = { 'ClientId': profile_id };
+            break;
+        case 'contractor':
+            dbRequest['where'] = { 'ContractorId': profile_id };
+            break;
+        default:
+            return res.status(httpStatus.BAD_REQUEST).end();
+    }
+
+    contract = await Contract.findAndCountAll(dbRequest);
+
+    if (!contract) return res.status(httpStatus.NOT_FOUND).end();
+    res.json(contract);
+};
+
 const notImplemented = async (req, res) => {
     return res.status(httpStatus.NOT_IMPLEMENTED).end();
 };
@@ -52,7 +81,7 @@ const notImplemented = async (req, res) => {
  * Routing
  */
 app.get('/contracts/:id', getProfile, getContractById);
-app.get('/contracts', getProfile, notImplemented);
+app.get('/contracts', getProfile, getContracts);
 app.get('/jobs/unpaid', getProfile, notImplemented);
 app.post('/jobs/:job_id/pay', getProfile, notImplemented);
 app.post('/balances/deposit/:userId', getProfile, notImplemented);
