@@ -12,10 +12,14 @@
   "scripts": {
     "start": "nodemon ./src/server.js",
     "seed": "node ./scripts/seedDb.js",
-    "prettier": "prettier --write ./src && prettier --write ./tests"
+    "prettier": "prettier --write ./src && prettier --write ./tests",
+    "test": "mocha ./tests --timeout 10000"
   },
   "devDependencies": {
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
     "concurrently": "4.1.0",
+    "mocha": "^10.2.0",
     "nodemon": "1.19.1",
     "prettier": "^2.8.3"
   },
