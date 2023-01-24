@@ -185,11 +185,13 @@ const getBestProfessions = async (req, res) => {
 };
 
 const getBestClients = async (req, res) => {
+    const PAGINATION_LIMIT = 2;
+
     let { start, end, limit } = req.query;
 
     // TODO: Add validator and BAD_REQUEST response
-    start = Date(start || Date('2020-01-01'));
-    end = Date(end || Date('2024-01-01'));
+    const startDate = new Date(start || '2020-01-01');
+    const endDate = new Date(end || Date.now());
 
     const { Job, Contract, Profile } = req.app.get('models');
 
@@ -206,14 +208,20 @@ const getBestClients = async (req, res) => {
             {
                 model: Contract,
                 required: true,
+                duplicating: false,
                 as: 'Client',
                 attributes: [],
                 include: [
                     {
                         model: Job,
                         required: true,
+                        duplicating: false,
                         where: {
                             paid: true,
+                            paymentDate: {
+                                [Op.between]: [startDate, endDate],
+                            }
+
                         },
                         attributes: [],
                     }
@@ -221,6 +229,8 @@ const getBestClients = async (req, res) => {
             },
         ],
         group: 'Profile.id',
+        order: [['paid', 'DESC']],
+        limit: limit || PAGINATION_LIMIT,
     });
 
     return res.json(result);
