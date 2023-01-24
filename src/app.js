@@ -157,7 +157,7 @@ const getBestProfessions = async (req, res) => {
 
     const { Job, Contract, Profile } = req.app.get('models');
 
-    result = await Profile.findAll({
+    const result = await Profile.findAll({
         attributes: [
             'profession',
             [sequelize.fn('SUM', sequelize.col('price')), 'earnings']
@@ -184,6 +184,47 @@ const getBestProfessions = async (req, res) => {
     return res.json(result);
 };
 
+const getBestClients = async (req, res) => {
+    let { start, end, limit } = req.query;
+
+    // TODO: Add validator and BAD_REQUEST response
+    start = Date(start || Date('2020-01-01'));
+    end = Date(end || Date('2024-01-01'));
+
+    const { Job, Contract, Profile } = req.app.get('models');
+
+    const result = await Profile.findAll({
+        attributes: [
+            'id',
+            [sequelize.literal("firstName || ' ' || lastName"), 'fullName'],
+            [sequelize.fn('SUM', sequelize.col('price')), 'paid'],
+        ],
+        where: {
+            type: 'client',
+        },
+        include: [
+            {
+                model: Contract,
+                required: true,
+                as: 'Client',
+                attributes: [],
+                include: [
+                    {
+                        model: Job,
+                        required: true,
+                        where: {
+                            paid: true,
+                        },
+                        attributes: [],
+                    }
+                ]
+            },
+        ],
+        group: 'Profile.id',
+    });
+
+    return res.json(result);
+};
 
 const notImplemented = async (req, res) => {
     return res.status(httpStatus.NOT_IMPLEMENTED).end();
@@ -198,6 +239,6 @@ app.get('/jobs/unpaid', getProfile, getUnpaidJobs);
 app.post('/jobs/:job_id/pay', getProfile, postPayJob);
 app.post('/balances/deposit/:userId', getProfile, notImplemented);
 app.get('/admin/best-profession', getBestProfessions);
-app.get('/admin/best-clients?start=<date>&end=<date>&limit=<integer>', getProfile, notImplemented);
+app.get('/admin/best-clients', getBestClients);
 
 module.exports = app;
