@@ -35,21 +35,12 @@ const getContractById = async (req, res) => {
     const { id } = req.params;
     const { id: profile_id, type } = req.profile.dataValues;
 
-    let contract;
+    const contracts = await Contract.findOne({
+        where: { id, [typeToIdDict[type]]: profile_id },
+    });
 
-    switch (type) {
-        case 'client':
-            contract = await Contract.findOne({ where: { id, 'ClientId': profile_id } });
-            break;
-        case 'contractor':
-            contract = await Contract.findOne({ where: { id, 'ContractorId': profile_id } });
-            break;
-        default:
-            return res.status(httpStatus.BAD_REQUEST).end();
-    }
-
-    if (!contract) return res.status(httpStatus.NOT_FOUND).end();
-    res.json(contract);
+    if (!contracts) return res.status(httpStatus.NOT_FOUND).end();
+    res.json(contracts);
 };
 
 const getContracts = async (req, res) => {
@@ -60,28 +51,14 @@ const getContracts = async (req, res) => {
     const { Contract } = req.app.get('models');
     const { id: profile_id, type } = req.profile.dataValues;
 
-    let contract;
-
-    const dbRequest = {
+    const contracts = await Contract.findAndCountAll({
         limit: PAGINATION_LIMIT,
         offset: PAGINATION_LIMIT * page,
-    };
+        where: { [typeToIdDict[type]]: profile_id },
+    });
 
-    switch (type) {
-        case 'client':
-            dbRequest['where'] = { 'ClientId': profile_id };
-            break;
-        case 'contractor':
-            dbRequest['where'] = { 'ContractorId': profile_id };
-            break;
-        default:
-            return res.status(httpStatus.BAD_REQUEST).end();
-    }
-
-    contract = await Contract.findAndCountAll(dbRequest);
-
-    if (!contract) return res.status(httpStatus.NOT_FOUND).end();
-    res.json(contract);
+    if (!contracts) return res.status(httpStatus.NOT_FOUND).end();
+    res.json(contracts);
 };
 
 const getUnpaidJobs = async (req, res) => {
