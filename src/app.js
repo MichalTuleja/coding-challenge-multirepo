@@ -152,8 +152,8 @@ const getBestProfessions = async (req, res) => {
     let { start, end } = req.query;
 
     // TODO: Add validator and BAD_REQUEST response
-    start = Date(start || Date('2020-01-01'));
-    end = Date(end || Date('2024-01-01'));
+    const startDate = new Date(start || '2020-01-01');
+    const endDate = new Date(end || Date.now());
 
     const { Job, Contract, Profile } = req.app.get('models');
 
@@ -173,12 +173,18 @@ const getBestProfessions = async (req, res) => {
                     {
                         model: Job,
                         required: true,
-                        where: { paid: true },
+                        where: {
+                            paid: true,
+                            paymentDate: {
+                                [Op.between]: [startDate, endDate],
+                            },
+                        },
                         attributes: [],
                     }
                 ]
             },
         ],
+        order: [['earnings', 'DESC']],
     });
 
     return res.json(result);
@@ -221,7 +227,6 @@ const getBestClients = async (req, res) => {
                             paymentDate: {
                                 [Op.between]: [startDate, endDate],
                             }
-
                         },
                         attributes: [],
                     }
