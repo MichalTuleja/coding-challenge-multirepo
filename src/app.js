@@ -143,7 +143,43 @@ const postPayJob = async (req, res) => {
         paymentDate: new Date(),
     });
     // TODO: Update client and contractor balances
-    // TODO: Add transaction
+    // TODO: Add SQL transaction
+
+    return res.json(result);
+};
+
+const getBestProfessions = async (req, res) => {
+    let { start, end } = req.query;
+
+    // TODO: Add validator and BAD_REQUEST response
+    start = Date(start || Date('2020-01-01'));
+    end = Date(end || Date('2024-01-01'));
+
+    const { Job, Contract, Profile } = req.app.get('models');
+
+    result = await Profile.findAll({
+        attributes: [
+            'profession',
+            [sequelize.fn('SUM', sequelize.col('price')), 'earnings']
+        ],
+        group: 'profession',
+        include: [
+            {
+                model: Contract,
+                required: true,
+                as: 'Contractor',
+                attributes: [],
+                include: [
+                    {
+                        model: Job,
+                        required: true,
+                        where: { paid: true },
+                        attributes: [],
+                    }
+                ]
+            },
+        ],
+    });
 
     return res.json(result);
 };
@@ -161,7 +197,7 @@ app.get('/contracts', getProfile, getContracts);
 app.get('/jobs/unpaid', getProfile, getUnpaidJobs);
 app.post('/jobs/:job_id/pay', getProfile, postPayJob);
 app.post('/balances/deposit/:userId', getProfile, notImplemented);
-app.post('/admin/best-profession?start=<date>&end=<date>', getProfile, notImplemented);
+app.get('/admin/best-profession', getBestProfessions);
 app.get('/admin/best-clients?start=<date>&end=<date>&limit=<integer>', getProfile, notImplemented);
 
 module.exports = app;
