@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 
+// TODO: Add pooling and WAL
 const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: './database.sqlite3',
