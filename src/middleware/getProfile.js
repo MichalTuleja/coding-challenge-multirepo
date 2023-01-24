@@ -3,7 +3,7 @@
  * That constant simulates the case when a user is authenticated
  * and has access to resources related them.
  */
-const FALLBACK_PROFILE_ID = 5;
+const FALLBACK_PROFILE_ID = 7;
 
 const getProfile = async (req, res, next) => {
     const { Profile } = req.app.get('models');
