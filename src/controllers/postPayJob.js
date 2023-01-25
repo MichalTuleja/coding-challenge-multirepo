@@ -1,11 +1,40 @@
-const { sequelize, Contract, Profile } = require('../model');
+const { sequelize, Job, Contract, Profile } = require('../model');
 const { Op } = require('sequelize');
 const httpStatus = require('http-status');
+
+const getJobWithContract = (jobId, profileId, trx) => Job.findOne({
+    where: {
+        'id': jobId,
+        'paid': { [Op.not]: true },
+    },
+    include: [
+        { 
+            model: Contract, 
+            where: {
+                'ClientId': profileId,
+            },
+            required: true,
+        },
+    ],
+}, { transaction: trx });
+
+const getProfile = (profileId, trx) => Profile.findOne({
+    where: { id: profileId }
+}, { transaction: trx });
+
+const getBalance = async (profileId, trx) => (await getProfile(profileId, trx)).balance;
+
+const decreaseBalance = (profileId, amount, trx) => Profile.decrement({ balance: -amount }, { where: { id: profileId } }, { transaction: trx });
+const increaseBalance = (profileId, amount, trx) => Profile.increment({ balance: amount }, { where: { id: profileId } }, { transaction: trx });
+
+const markAsPaid = (job, trx) => job.update({
+    paid: true,
+    paymentDate: new Date(),
+}, { transaction: trx });
 
 const postPayJob = async (req, res) => {
     const { job_id } = req.params;
 
-    const { Job, Contract } = req.app.get('models');
     const { id: profile_id, type } = req.profile.dataValues;
 
     if (type !== 'client') {
@@ -15,43 +44,39 @@ const postPayJob = async (req, res) => {
             .end();
     }
 
-    let job = await Job.findOne({
-        where: {
-            'id': job_id,
-            'paid': { [Op.not]: true },
-        },
-        include: [
-            { 
-                model: Contract, 
-                where: {
-                    'ClientId': profile_id,
-                },
-                required: true,
-            },
-        ],
-    });
+    const trx = await sequelize.transaction();
 
-    if (!job) {
+    try {
+        let job = await getJobWithContract(job_id, profile_id, trx);
+
+        if (!job) {
+            return res.status(httpStatus.NOT_FOUND)
+                      .send('The job is not found or already paid.')
+                      .end();
+        }
+
+        const contractorId = job.Contract.ContractorId;
+
+        if ((await getBalance(profile_id)) < job.price) {
+            return res.status(httpStatus.BAD_REQUEST).send('Insufficient balance!').end();
+        }
+
+        await decreaseBalance(contractorId, job.price, trx);
+        await increaseBalance(profile_id, job.price, trx);
+
+        const result = await markAsPaid(job, trx);
+
+        await trx.commit();
+
+        return res.json({ result });
+    } catch (error) {
+        await trx.rollback();
+        console.log(error);
         return res
-            .status(httpStatus.NOT_FOUND)
-            .send('The job is not found or already paid.')
+            .status(httpStatus.INTERNAL_SERVER_ERROR)
+            .send('Internal server error.')
             .end();
     }
-
-    const getBalance = async (profileId) => (await Profile.findOne({ where: { id: profileId } })).balance;
-
-    if ((await getBalance(profile_id)) < job.price) {
-        return res.status(httpStatus.BAD_REQUEST).send('Insufficient balance!').end();
-    }
-
-    const result = await job.update({
-        paid: true,
-        paymentDate: new Date(),
-    });
-    // TODO: Update client and contractor balances
-    // TODO: Add SQL transaction
-
-    return res.json(result);
 };
 
 module.exports = postPayJob;
