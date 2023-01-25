@@ -12,7 +12,7 @@ const getUnpaidJobs = require('./controllers/getUnpaidJobs');
 const postPayJob = require('./controllers/postPayJob');
 const getBestProfessions = require('./controllers/getBestProfessions');
 const getBestClients = require('./controllers/getBestClients');
-const postDeposit = require('./controllers/notImplemented');
+const postDeposit = require('./controllers/postDeposit');
 
 const app = express();
 
