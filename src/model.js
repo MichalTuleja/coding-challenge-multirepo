@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const SQLite = require('sqlite3');
 
 const sequelize = new Sequelize({
     dialect: 'sqlite',
@@ -11,6 +12,7 @@ const sequelize = new Sequelize({
         acquire: 30000,
         idle: 10000
     },
+    mode: SQLite.OPEN_FULLMUTEX,
 });
 
 class Profile extends Sequelize.Model {}
