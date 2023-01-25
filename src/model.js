@@ -1,10 +1,16 @@
 const Sequelize = require('sequelize');
 
-// TODO: Add pooling and WAL
 const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: './database.sqlite3',
     logging: false,
+    transactionType: 'IMMEDIATE',
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    },
 });
 
 class Profile extends Sequelize.Model {}
@@ -83,6 +89,8 @@ Profile.hasMany(Contract, { as: 'Client', foreignKey: 'ClientId' });
 Contract.belongsTo(Profile, { as: 'Client' });
 Contract.hasMany(Job);
 Job.belongsTo(Contract);
+
+sequelize.query('PRAGMA journal_mode=WAL;');
 
 module.exports = {
     sequelize,
