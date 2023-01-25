@@ -1,6 +1,10 @@
-const { sequelize, Contract, Profile } = require('../model');
 const { Op } = require('sequelize');
 const httpStatus = require('http-status');
+
+const typeToIdDict = {
+    'client': 'ClientId',
+    'contractor': 'ContractorId',
+};
 
 const getUnpaidJobs = async (req, res) => {
     const PAGINATION_LIMIT = 2;
