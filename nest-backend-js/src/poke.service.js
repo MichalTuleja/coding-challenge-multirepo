@@ -1,15 +1,27 @@
 import { Injectable, Dependencies } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Poke } from './poke.entity';
+
+import {
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 import * as fs from 'fs';
 import { parse } from '@fast-csv/parse';
+
+import { Poke } from './poke.entity';
 
 @Injectable()
 @Dependencies(getRepositoryToken(Poke))
 export class PokeService {
   constructor(pokeRepository) {
     this.pokeRepository = pokeRepository;
+  }
+
+  async paginate(options) {
+    const queryBuilder = this.pokeRepository.createQueryBuilder('poke');
+    queryBuilder.orderBy('poke.id', 'ASC');
+
+    return paginate(queryBuilder, options);
   }
 
   findAll() {

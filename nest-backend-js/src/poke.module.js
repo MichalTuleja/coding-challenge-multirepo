@@ -27,8 +27,8 @@ const dbConfig = {
     TypeOrmModule,
     PokeService,
   ],
-  controllers: [PokeController],
-  providers: [PokeService],
+  controllers: [ PokeController ],
+  providers: [ PokeService ],
 })
 
 // const dataSource = new DataSource(dbConfig);
