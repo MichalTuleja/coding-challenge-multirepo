@@ -6,6 +6,7 @@ import {
   Put,
   Param,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -57,11 +58,29 @@ export class PokemonsController {
   // }
 
   // @Patch(':id')
+}
 
-  // @Get('calculate_damage')
-  // getDamage(@Query() query): string {
-  //   // TODO: Validate id1 to match pokemon id
-  //   // TODO: Validate id2 to match pokemon id
-  //   return `Hello ${query.id1} ${query.id2}`;
-  // }
+@UseGuards(RolesGuard)
+@Controller('calculate_damage')
+export class DamageController {
+  constructor(private readonly pokemonsService: PokemonsService) {}
+
+  @Get()
+  async getDamage(@Query() query): Promise<number> {
+    // TODO: Validate id1 to match pokemon id
+    // TODO: Validate id2 to match pokemon id
+
+    const attacker = await this.pokemonsService.findById(query.attackerId);
+    const defender = await this.pokemonsService.findById(query.defenderId);
+
+    // TODO: Update the typeModifier logic to support the following logic:
+    // - When the attacker type is electric and the defender is water it should return 2
+    // - When the attacker type is electric and the defender is rock it should return 0.5
+    // - Any other scenario should return 1
+    const typeModifier = 1
+
+    const result = (30 * attacker.Attack / defender.Defense) * typeModifier
+
+    return result;
+  }
 }
