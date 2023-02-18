@@ -8,6 +8,8 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "db:migrate": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run -d src/database.datasource.ts",
+    "db:seed": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run -d src/database.datasource.ts",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

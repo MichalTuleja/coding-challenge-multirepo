@@ -21,11 +21,16 @@ import { CoreModule } from './core/core.module';
       password: 'root',
       database: 'test',
       autoLoadEntities: true,
-      synchronize: true,
-      migrations: ['dist/migrations/1676332995841-seed-poke.js'],
-      // migrations: ['dist/migrations/*{.ts,.js}'],
+      synchronize: false,
+      // migrations: ['dist/migrations/1676332995841-seed-poke.js'],
+      migrations: ['dist/migrations/*{.ts,.js}'],
       // migrationsTableName: "migrations",
-      migrationsRun: true,
+      migrationsRun: false,
+    //   "cli": {
+    //     "entitiesDir": "src/entity",
+    //     "migrationsDir": "src/migration",
+    //     "subscribersDir": "src/subscriber"
+    // }
     }),
     UsersModule,
   ],
