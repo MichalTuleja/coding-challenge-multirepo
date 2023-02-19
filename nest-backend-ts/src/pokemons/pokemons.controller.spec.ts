@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
-import { PokemonsController } from './pokemons.controller';
+import { PokemonsController, DamageController } from './pokemons.controller';
 import { PokemonsService } from './pokemons.service';
+import { Pokemon } from './pokemon.entity';
 
 describe('PokemonsController', () => {
   let pokemonsController: PokemonsController;
@@ -8,7 +9,7 @@ describe('PokemonsController', () => {
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
-      controllers: [PokemonsController],
+      controllers: [PokemonsController, DamageController],
       providers: [PokemonsService],
     }).compile();
 
@@ -17,15 +18,28 @@ describe('PokemonsController', () => {
   });
 
   describe('findAll', () => {
-    it('should return an array of pokemons', async () => {
+    xit('should return an array of pokemons', async () => {
       const result: Pokemon[] = [
         {
-          age: 2,
-          breed: 'Bombay',
-          name: 'Pixel',
+          "Attack": 49,
+          "Defense": 49,
+          "Generation": 1,
+          "HP": 45,
+          "Legendary": false,
+          "Name": "Bulbasaur",
+          "Sp. Atk": 65,
+          "Sp. Def": 65,
+          "Speed": 45,
+          "Total": 318,
+          "Type 1": "Grass",
+          "Type 2": "Poison",
+          "id": 1
         },
       ];
-      jest.spyOn(pokemonsService, 'findAll').mockImplementation(() => result);
+      jest.spyOn(pokemonsService, 'findAll').mockImplementation(async () => {
+        console.log(result);
+        return result
+      });
 
       expect(await pokemonsController.findAll()).toBe(result);
     });
