@@ -35,6 +35,21 @@ describe('PokemonsController', () => {
           "Type 2": "Poison",
           "id": 1
         },
+        {
+          "Attack": 52,
+          "Defense": 43,
+          "Generation": 1,
+          "HP": 39,
+          "Legendary": false,
+          "Name": "Charmander",
+          "Sp. Atk": 60,
+          "Sp. Def": 50,
+          "Speed": 65,
+          "Total": 309,
+          "Type 1": "Fire",
+          "Type 2": "",
+          "id": 5
+        },
       ];
       jest.spyOn(pokemonsService, 'findAll').mockImplementation(async () => {
         console.log(result);

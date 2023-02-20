@@ -20,6 +20,21 @@ const pokemonArray = [
     "Type 2": "Poison",
     "id": 1
   },
+  {
+    "Attack": 52,
+    "Defense": 43,
+    "Generation": 1,
+    "HP": 39,
+    "Legendary": false,
+    "Name": "Charmander",
+    "Sp. Atk": 60,
+    "Sp. Def": 50,
+    "Speed": 65,
+    "Total": 309,
+    "Type 1": "Fire",
+    "Type 2": "",
+    "id": 5
+  },
 ];
 
 const onePokemon = pokemonArray[0];
@@ -98,5 +113,15 @@ describe('PokemonService', () => {
       expect(removeSpy).toBeCalledWith('2');
       expect(retVal).toBeUndefined();
     });
+  });
+
+  describe('findAll()', () => {
+    it('should calculate damage of two Pokemons with typeModifier = 1', async () => {
+      const result = await service.calculateDamage(1, 2);
+      expect(result).toEqual(30);
+    });
+
+    xit('should calculate damage of two Pokemons with non-std typeModifier (electric:water)', () => {});
+    xit('should calculate damage of two Pokemons with non-std typeModifier (electric:rock)', () => {});
   });
 });

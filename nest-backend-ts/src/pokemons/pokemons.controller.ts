@@ -64,18 +64,7 @@ export class DamageController {
     // TODO: Validate id1 to match pokemon id
     // TODO: Validate id2 to match pokemon id
 
-    const attacker = await this.pokemonsService.findById(query.attackerId);
-    const defender = await this.pokemonsService.findById(query.defenderId);
-
-    // TODO: Update the typeModifier logic to support the following logic:
-    // - When the attacker type is electric and the defender is water it should return 2
-    // - When the attacker type is electric and the defender is rock it should return 0.5
-    // - Any other scenario should return 1
-    const typeModifier = 1
-
-    const result = (30 * attacker.Attack / defender.Defense) * typeModifier
-
-    return result;
+    return this.pokemonsService.calculateDamage(query.attackerId, query.defenderId);
   }
 }
 
@@ -85,7 +74,7 @@ export class RingFightController {
   constructor(private readonly pokemonsService: PokemonsService) {}
 
   @Get()
-  async getDamage(@Query() query): Promise<string> {
+  async getRingFightResult(@Query() query): Promise<string> {
     // TODO: Validate ids to match pokemon id
 
     const ids = query.ids.split(',');
