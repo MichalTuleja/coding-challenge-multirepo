@@ -47,3 +47,28 @@ To run the application simply run it with npm.
 
 `npm run start`
 
+### Requesting the API
+
+Firstly, create a user:
+
+```
+http POST :3000/users username=user password=pass
+```
+
+Authenticate with the credentials below:
+
+```
+http POST :3000/auth/login username=user password=pass
+
+{
+    "data": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIiLCJpYXQiOjE2NzY4OTIyMzgsImV4cCI6MTY3Njg5MjI5OH0.X7BX21JKbANQp3KtuBa8vvUDAai7f-OptcWzRLLsW6M"
+    }
+}
+```
+
+Now you can use the token to perform various requests:
+
+```
+http -A bearer -a 'eyJhb...LsW6M' :3000/poke
+```

@@ -4,7 +4,8 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 
-// export type User = any;
+// TODO: This API is not protected
+// Consider admin roles to secure these routes properly
 
 @Injectable()
 export class UsersService {
@@ -24,36 +25,24 @@ export class UsersService {
     const users = [
       {
         id: 1,
-        username: 'john',
-        password: 'changeme',
-        firstName: 'john',
-        lastName: 'smith',
-        isActive: true,
-      },
-      {
-        id: 2,
-        username: 'chris',
-        password: 'secret',
-        firstName: 'john',
-        lastName: 'smith',
-        isActive: true,
-      },
-      {
-        id: 3,
-        username: 'maria',
-        password: 'guess',
-        firstName: 'john',
-        lastName: 'smith',
+        username: 'user',
+        password: 'pass',
+        firstName: 'Default',
+        lastName: 'User',
         isActive: true,
       },
     ];
+
     return users.find((user) => user.username === username);
   }
 
   create(createUserDto: CreateUserDto): Promise<User> {
     const user = new User();
-    user.firstName = createUserDto.firstName;
-    user.lastName = createUserDto.lastName;
+    user.username = createUserDto.username;
+    user.password = createUserDto.password;
+    user.firstName = createUserDto.firstName || '';
+    user.lastName = createUserDto.lastName || '';
+    user.isActive = true;
 
     return this.usersRepository.save(user);
   }
