@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 // import { Pokemon } from './interfaces/pokemon.interface';
 import { Pokemon } from './pokemon.entity';
+import { RingFightController } from './pokemons.controller';
 
 @Injectable()
 export class PokemonsService {
@@ -42,7 +43,41 @@ export class PokemonsService {
     return result;
   }
 
-  // async simulateRingFight(ids: number[]): Promise<Pokemon> {
+  async simulateRingFight(ids: number[]): Promise<Pokemon> {
+    let ringFightWinner;
+    const pokemons: Pokemon[] = await Promise.all(ids.map(id => this.findById(id)));
 
-  // }
+    type pokemonExt = {
+      pokemon: Pokemon,
+      defeated: boolean,
+    };
+
+    let pokemonArr: pokemonExt[] = pokemons.map((p) => ({ pokemon: p, defeated: false}));
+
+    // Be careful, that function changes order
+    const pickRandomTwo = (list: pokemonExt[]): pokemonExt[] => {
+      const shuffled = list.sort(() => 0.5 - Math.random());
+      return [shuffled[0], shuffled[1]];
+    }
+
+    const simulateFight = (p1: pokemonExt, p2: pokemonExt) => { // TODO: Add return type
+      return { winner: p1, loser: p2 };
+    }
+
+    // We pick a pokemon randomly each time
+    // Alternatively we could use a binary tree
+    for (let i = 0; i < pokemonArr.length ** 2; i++) { // Make sure the loop will finally end
+      const winningPokemons = pokemonArr.filter((p) => p.defeated == false);
+      if (winningPokemons.length == 1) {
+        ringFightWinner = winningPokemons[0];
+        break;
+      }
+
+      const [ pok1, pok2 ] = pickRandomTwo(winningPokemons.filter((p) => p.defeated == false));
+      const { loser } = simulateFight(pok1, pok2);
+      loser.defeated = true;
+    }
+
+    return ringFightWinner.p;
+  }
 }

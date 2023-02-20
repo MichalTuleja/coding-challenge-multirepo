@@ -115,7 +115,7 @@ describe('PokemonService', () => {
     });
   });
 
-  describe('findAll()', () => {
+  describe('calculateDamage()', () => {
     it('should calculate damage of two Pokemons with typeModifier = 1', async () => {
       const result = await service.calculateDamage(1, 2);
       expect(result).toEqual(30);
@@ -123,5 +123,15 @@ describe('PokemonService', () => {
 
     xit('should calculate damage of two Pokemons with non-std typeModifier (electric:water)', () => {});
     xit('should calculate damage of two Pokemons with non-std typeModifier (electric:rock)', () => {});
+  });
+
+  describe('simulateRingFight()', () => {
+    it('should simulate fight of two Pokemons', async () => {
+      const result = await service.simulateRingFight([1, 2]);
+      expect(result).toEqual(pokemonArray[2]);
+    });
+
+    xit('should simulate fight of four Pokemons', () => {});
+    xit('should simulate fight of 128 Pokemons', () => {});
   });
 });

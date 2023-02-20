@@ -74,39 +74,13 @@ export class RingFightController {
   constructor(private readonly pokemonsService: PokemonsService) {}
 
   @Get()
-  async getRingFightResult(@Query() query): Promise<string> {
+  async getRingFightResult(@Query() query): Promise<Pokemon> {
     // TODO: Validate ids to match pokemon id
+    // TODO: Validate if the list is length of 2, 4, 8, 16...
 
-    const ids = query.ids.split(',');
+    const idsArray = query.ids.split(',');
 
-    let ringFightWinner;
-    const pokemons = await Promise.all(ids.map(id => this.pokemonsService.findById(id)));
-
-    pokemons.map((p) => ({ ...p, defeated: false}));
-
-    // Be careful, that function changes order
-    const pickRandomTwo = (list: Pokemon[]): Pokemon[] => {
-      const shuffled = list.sort(() => 0.5 - Math.random());
-      return [shuffled[0], shuffled[1]];
-    }
-
-    const simulateFight = (p1: Pokemon, p2: Pokemon) => { // TODO: Add return type
-      return { winner: p1, loser: p2 };
-    }
-
-    // We pick a pokemon randomly each time
-    // Alternatively we could use a binary tree
-    for (let i = 0; i < pokemons.length**2; i++) { // Make sure the loop will finally end
-      const winningPokemons = pokemons.filter((p) => p.defeated == true);
-      if (winningPokemons.length == 1) {
-        ringFightWinner = winningPokemons[0];
-        break;
-      }
-
-      const [ pok1, pok2 ] = pickRandomTwo(pokemons.filter((p) => p.defeated == false));
-      const { winner, loser } = simulateFight(pok1, pok2);
-      // loser.defeated = true;
-    }
+    const ringFightWinner: Pokemon = await this.pokemonsService.simulateRingFight(idsArray);
 
     return ringFightWinner;
   }
