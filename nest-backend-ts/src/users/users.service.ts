@@ -21,19 +21,7 @@ export class UsersService {
   }
 
   async findByUsername(username: string): Promise<User | undefined> {
-    // TODO: Rewrite to database
-    const users = [
-      {
-        id: 1,
-        username: 'user',
-        password: 'pass',
-        firstName: 'Default',
-        lastName: 'User',
-        isActive: true,
-      },
-    ];
-
-    return users.find((user) => user.username === username);
+    return this.usersRepository.findOneBy({ username });
   }
 
   create(createUserDto: CreateUserDto): Promise<User> {
