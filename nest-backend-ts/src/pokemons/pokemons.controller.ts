@@ -77,6 +77,7 @@ export class RingFightController {
   async getRingFightResult(@Query() query): Promise<Pokemon> {
     // TODO: Validate ids to match pokemon id
     // TODO: Validate if the list is length of 2, 4, 8, 16...
+    // TODO: Validate for unique IDs before checking length
 
     const idsArray = query.ids.split(',');
 

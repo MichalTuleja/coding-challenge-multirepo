@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-// import { Pokemon } from './interfaces/pokemon.interface';
 import { Pokemon } from './pokemon.entity';
-import { RingFightController } from './pokemons.controller';
 
 @Injectable()
 export class PokemonsService {
@@ -43,6 +41,7 @@ export class PokemonsService {
     return result;
   }
 
+  // TODO: Consider moving those two functions to a separate module/service
   async simulateRingFight(ids: number[]): Promise<Pokemon> {
     let ringFightWinner;
     const pokemons: Pokemon[] = await Promise.all(ids.map(id => this.findById(id)));
@@ -60,8 +59,24 @@ export class PokemonsService {
       return [shuffled[0], shuffled[1]];
     }
 
-    const simulateFight = (p1: pokemonExt, p2: pokemonExt) => { // TODO: Add return type
-      return { winner: p1, loser: p2 };
+    const simulateFight = async (p1: pokemonExt, p2: pokemonExt): Promise<{ winner: pokemonExt, loser: pokemonExt }> => { // TODO: Add return type
+      const damage1: number = await this.calculateDamage(p1.pokemon.id, p2.pokemon.id);
+      const damage2: number = await this.calculateDamage(p2.pokemon.id, p1.pokemon.id);
+
+      // In this scenario we check only one hit as that determines which Pokemon will be defeated sooner
+      // Implementing random effects such as critical hit would make this algorithm more interesting
+      // Ideally speed should be taken into account as it determines which Pokemon moves first
+
+      if (damage1 > damage2) {
+        return { winner: p1, loser: p2 };
+      } else if (damage1 < damage2) {
+        return { winner: p2, loser: p1 };
+      } else {
+        // coin toss
+        const result: number = Math.random();
+        if (result > 0.5) return { winner: p1, loser: p2 };
+        else return { winner: p2, loser: p1 };
+      }
     }
 
     // We pick a pokemon randomly each time
@@ -74,7 +89,7 @@ export class PokemonsService {
       }
 
       const [ pok1, pok2 ] = pickRandomTwo(winningPokemons.filter((p) => p.defeated == false));
-      const { loser } = simulateFight(pok1, pok2);
+      const { loser } = await simulateFight(pok1, pok2);
       loser.defeated = true;
     }
 
