@@ -16,7 +16,9 @@ They are easy to find and browse with the VS Code `Gruntfuggly.todo-tree` extens
 
 Make sure dependencies are met by running:
 
-`npm install`
+```
+npm install
+```
 
 ### Running
 
@@ -24,28 +26,47 @@ This example requires docker or a local MySQL installation. If using a local MyS
 
 Update: Use environment file `.env` to set the database connection. For details check the file `database.module.ts`.
 
-#### MySQL (by Docker)
+#### Postgres (by Docker)
 
 There is a `docker-compose.yml` file for starting Docker.
 
-`docker-compose up -d`
+```
+docker-compose up -d
+```
 
 Check the logs to make sure the DB started properly.
 
-`docker-compose logs -f mysql`
+```
+docker-compose logs -f postgres
+```
 
+#### Configure database
+
+```
+DATABASE_URL="postgres://postgres:password@localhost:5432/nest-backend"
+```
+
+#### Create schema
+
+```
+npm run db:schema:sync
+```
 
 #### Seed the database
 
 To seed the database with Pokemons execute the following command.
 
-`npm run db:seed`
+```
+npm run db:seed
+```
 
 ### Run the application
 
 To run the application simply run it with npm.
 
-`npm run start`
+```
+npm run start
+```
 
 ### Requesting the API
 
