@@ -7,11 +7,7 @@ import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConne
 
 export const dbConfig: PostgresConnectionOptions = {
 	type: 'postgres',
-	host: 'localhost',
-	port: 5432,
-	username: 'postgres',
-	password: 'password',
-	database: 'nest-backend',
+	url: process.env.DATABASE_URL || 'postgres://postgres:password@localhost:5432/nest-backend',
 	entities: ['dist/**/*.entity.js'],
 	synchronize: true,
 	migrations: ['dist/migrations/*{.ts,.js}'],
