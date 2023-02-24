@@ -154,13 +154,20 @@ The list of potential features is long and will be added consecutively.
 - [x] Basic CRUD
 - [x] Authentication with Passport
 - [x] Database backend with TypeORM
-- [ ] Database authentication
+- [x] Authentication against the Database
+  - [ ] Move sessions to Redis
 - [ ] Roles (admin, user, etc.)
 - [ ] Caching (Redis)
 - [ ] Containerization (Docker)
+- [x] Unit tests
+  - [x] Service
+  - [ ] Controllers
+- [ ] API tests
+  - [ ] `/poke`
+  - [ ] `/users`
 
 Minor potential improvements are marked as `TODO:` in the solution codebase (`src/` folder).
 
 ## License
 
-This code is written by @MichalTuleja and distributed under MIT licence.
+This code is written by @MichalTuleja and distributed under MIT license.
