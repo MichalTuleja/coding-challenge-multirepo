@@ -56,6 +56,7 @@ describe('PokemonService', () => {
             remove: jest.fn(),
             delete: jest.fn(),
             upsert: jest.fn().mockResolvedValue(onePokemon),
+            insert: jest.fn().mockResolvedValue(1),
           },
         },
       ],
@@ -71,24 +72,48 @@ describe('PokemonService', () => {
 
   describe('create()', () => {
     xit('should successfully insert a Pokemon', () => {
-      // expect(
-      //   service.insert({
-      //     "Attack": 49,
-      //     "Defense": 49,
-      //     "Generation": 1,
-      //     "HP": 45,
-      //     "Legendary": false,
-      //     "Name": "Bulbasaur",
-      //     "Sp. Atk": 65,
-      //     "Sp. Def": 65,
-      //     "Speed": 45,
-      //     "Total": 318,
-      //     "Type 1": "Grass",
-      //     "Type 2": "Poison"
-      //   }),
-      // ).resolves.toEqual(onePokemon);
+      expect(
+        service.insert({
+          "Attack": 49,
+          "Defense": 49,
+          "Generation": 1,
+          "HP": 45,
+          "Legendary": false,
+          "Name": "Bulbasaur",
+          "Sp. Atk": 65,
+          "Sp. Def": 65,
+          "Speed": 45,
+          "Total": 318,
+          "Type 1": "Grass",
+          "Type 2": "Poison",
+          "id": 1,
+        }),
+      ).resolves.toEqual(1);
     });
   });
+
+  describe('save()', () => {
+    it('should successfully update a Pokemon', () => {
+      expect(
+        service.save({
+          "Attack": 49,
+          "Defense": 49,
+          "Generation": 1,
+          "HP": 45,
+          "Legendary": false,
+          "Name": "Bulbasaur",
+          "Sp. Atk": 65,
+          "Sp. Def": 65,
+          "Speed": 45,
+          "Total": 318,
+          "Type 1": "Grass",
+          "Type 2": "Poison",
+          "id": 1,
+        }, 1),
+      ).resolves.toEqual(onePokemon);
+    });
+  });
+
 
   describe('findAll()', () => {
     it('should return an array of Pokemons', async () => {
