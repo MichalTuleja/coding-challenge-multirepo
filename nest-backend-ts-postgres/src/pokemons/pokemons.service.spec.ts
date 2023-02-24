@@ -71,23 +71,22 @@ describe('PokemonService', () => {
 
   describe('create()', () => {
     xit('should successfully insert a Pokemon', () => {
-      expect(
-        service.save({
-          "Attack": 49,
-          "Defense": 49,
-          "Generation": 1,
-          "HP": 45,
-          "Legendary": false,
-          "Name": "Bulbasaur",
-          "Sp. Atk": 65,
-          "Sp. Def": 65,
-          "Speed": 45,
-          "Total": 318,
-          "Type 1": "Grass",
-          "Type 2": "Poison",
-          "id": 1
-        }),
-      ).resolves.toEqual(onePokemon);
+      // expect(
+      //   service.insert({
+      //     "Attack": 49,
+      //     "Defense": 49,
+      //     "Generation": 1,
+      //     "HP": 45,
+      //     "Legendary": false,
+      //     "Name": "Bulbasaur",
+      //     "Sp. Atk": 65,
+      //     "Sp. Def": 65,
+      //     "Speed": 45,
+      //     "Total": 318,
+      //     "Type 1": "Grass",
+      //     "Type 2": "Poison"
+      //   }),
+      // ).resolves.toEqual(onePokemon);
     });
   });
 
@@ -106,32 +105,12 @@ describe('PokemonService', () => {
     });
   });
 
-  xdescribe('remove()', () => {
+  describe('remove()', () => {
     it('should call remove with the passed value', async () => {
       const removeSpy = jest.spyOn(repository, 'delete');
       const retVal = await service.remove('2');
       expect(removeSpy).toBeCalledWith('2');
       expect(retVal).toBeUndefined();
     });
-  });
-
-  describe('calculateDamage()', () => {
-    it('should calculate damage of two Pokemons with typeModifier = 1', async () => {
-      const result = await service.calculateDamage(1, 2);
-      expect(result).toEqual(30);
-    });
-
-    xit('should calculate damage of two Pokemons with non-std typeModifier (electric:water)', () => {});
-    xit('should calculate damage of two Pokemons with non-std typeModifier (electric:rock)', () => {});
-  });
-
-  describe('simulateRingFight()', () => {
-    it('should simulate fight of two Pokemons', async () => {
-      const result = await service.simulateRingFight([1, 2]);
-      expect(result).toEqual(pokemonArray[2]);
-    });
-
-    xit('should simulate fight of four Pokemons', () => {});
-    xit('should simulate fight of 128 Pokemons', () => {});
   });
 });

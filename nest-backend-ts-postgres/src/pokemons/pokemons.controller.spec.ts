@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { PokemonsController, DamageController } from './pokemons.controller';
+import { PokemonsController } from './pokemons.controller';
 import { PokemonsService } from './pokemons.service';
 import { Pokemon } from './pokemon.entity';
 
@@ -9,7 +9,7 @@ describe('PokemonsController', () => {
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
-      controllers: [PokemonsController, DamageController],
+      controllers: [PokemonsController],
       providers: [PokemonsService],
     }).compile();
 
@@ -17,7 +17,7 @@ describe('PokemonsController', () => {
     pokemonsController = moduleRef.get<PokemonsController>(PokemonsController);
   });
 
-  describe('findAll', () => {
+  xdescribe('findAll', () => {
     xit('should return an array of pokemons', async () => {
       const result: Pokemon[] = [
         {

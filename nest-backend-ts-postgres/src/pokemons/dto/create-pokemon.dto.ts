@@ -2,7 +2,7 @@ import { IsInt, IsString, IsNumber, IsBoolean } from 'class-validator';
 
 export class CreatePokemonDto {
   @IsInt()
-  readonly id: number;
+  readonly id: number | null;
 
   @IsString()
   readonly 'Name': string;
