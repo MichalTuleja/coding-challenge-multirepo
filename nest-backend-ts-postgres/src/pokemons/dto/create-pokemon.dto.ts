@@ -8,35 +8,35 @@ export class CreatePokemonDto {
   readonly 'Name': string;
 
   @IsString()
-  readonly 'Type 1': string;
+  readonly 'Type 1': string | null;
 
   @IsString()
-  readonly 'Type 2': string;
+  readonly 'Type 2': string | null;
 
   @IsNumber()
-  readonly 'Total': number;
+  readonly 'Total': number | null;
 
   @IsNumber()
-  readonly 'HP': number;
+  readonly 'HP': number | null;
 
   @IsNumber()
-  readonly 'Attack': number;
+  readonly 'Attack': number | null;
 
   @IsNumber()
-  readonly 'Defense': number;
+  readonly 'Defense': number | null;
 
   @IsNumber()
-  readonly 'Sp. Atk': number;
+  readonly 'Sp. Atk': number | null;
 
   @IsNumber()
-  readonly 'Sp. Def': number;
+  readonly 'Sp. Def': number | null;
 
   @IsNumber()
-  readonly 'Speed': number;
+  readonly 'Speed': number | null;
 
   @IsNumber()
-  readonly 'Generation': number;
+  readonly 'Generation': number | null;
 
   @IsBoolean()
-  readonly 'Legendary': boolean;
+  readonly 'Legendary': boolean | null;
 }

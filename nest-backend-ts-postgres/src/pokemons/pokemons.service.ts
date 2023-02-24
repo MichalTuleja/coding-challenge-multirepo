@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InsertResult, UpdateResult, Repository } from 'typeorm';
+import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { Pokemon } from './pokemon.entity';
 
 @Injectable()
@@ -14,8 +15,23 @@ export class PokemonsService {
     return this.pokeRepository.find();
   }
 
-  async save(pokemon: Pokemon): Promise<void> {
-    await this.pokeRepository.upsert(pokemon, ['id']);
+  async insert(pokemon: Pokemon): Promise<number> {
+    const result: InsertResult = await this.pokeRepository.insert(pokemon);
+    return result.identifiers[0]['id'];
+  }
+
+  async save(pokemon: Pokemon, id: number): Promise<Pokemon> {
+    let setAll = (obj, val) => Object.keys(obj).forEach(k => obj[k] = val);
+    const pokemonTemplate: Pokemon = new Pokemon();
+    setAll(pokemonTemplate, null);
+
+    console.log(pokemonTemplate);
+
+    return this.pokeRepository.save({
+      ...pokemonTemplate,
+      ...pokemon,
+      id,
+    });
   }
 
   findById(id: number): Promise<Pokemon> {

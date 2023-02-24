@@ -18,9 +18,19 @@ import { Pokemon } from './pokemon.entity';
 export class PokemonsController {
   constructor(private readonly pokemonsService: PokemonsService) {}
 
-  @Put()
-  async update(@Body() createPokemonDto: CreatePokemonDto) {
-    this.pokemonsService.save(createPokemonDto);
+  @Post()
+  async create(@Body() createPokemonDto: CreatePokemonDto) {
+    const id: number = await this.pokemonsService.insert(createPokemonDto);
+    return this.pokemonsService.findById(id);
+  }
+
+  @Put(':id')
+  async update(
+    @Body() createPokemonDto: CreatePokemonDto,
+    @Param('id', new ParseIntPipe()) id: number
+  ) {
+    await this.pokemonsService.save(createPokemonDto, id);
+    return this.pokemonsService.findById(id);
   }
 
   @Get()
