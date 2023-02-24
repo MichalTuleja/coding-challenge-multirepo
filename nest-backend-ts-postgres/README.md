@@ -139,12 +139,6 @@ http POST :3000/poke Name=Dinosaur Defense=300000
 http POST :3000/poke/1 Name=Dinosaur Defense=300000
 ```
 
-#### Updating an item (PATCH)
-
-```bash
-http POST :3000/poke Name=Dinosaur Defense=300000
-```
-
 ## TODOs and additional features
 
 The intention of this project is to present variety of capabilities available in Nest.js using TypeScript and TypeORM.
@@ -165,6 +159,7 @@ The list of potential features is long and will be added consecutively.
 - [ ] API tests
   - [ ] `/poke`
   - [ ] `/users`
+- [ ] Add pagination support
 
 Minor potential improvements are marked as `TODO:` in the solution codebase (`src/` folder).
 
