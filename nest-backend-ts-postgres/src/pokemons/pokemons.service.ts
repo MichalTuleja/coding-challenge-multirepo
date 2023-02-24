@@ -21,14 +21,7 @@ export class PokemonsService {
   }
 
   async save(pokemon: Pokemon, id: number): Promise<Pokemon> {
-    let setAll = (obj, val) => Object.keys(obj).forEach(k => obj[k] = val);
-    const pokemonTemplate: Pokemon = new Pokemon();
-    setAll(pokemonTemplate, null);
-
-    console.log(pokemonTemplate);
-
     return this.pokeRepository.save({
-      ...pokemonTemplate,
       ...pokemon,
       id,
     });
